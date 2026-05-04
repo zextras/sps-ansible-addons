@@ -3,16 +3,23 @@ from __future__ import annotations
 from typing import Any
 
 
-def _is_ascii_alnum_or_hyphen(value: str) -> bool:
+def _is_lower_ascii_alnum_or_hyphen(value: str) -> bool:
     for char in value:
-        if not (char.isascii() and (char.isalnum() or char == "-")):
+        if not (
+            char.isascii()
+            and (
+                char.isdigit()
+                or ("a" <= char <= "z")
+                or char == "-"
+            )
+        ):
             return False
     return True
 
 
-def _is_ascii_alpha(value: str) -> bool:
+def _is_lower_ascii_alpha(value: str) -> bool:
     for char in value:
-        if not (char.isascii() and char.isalpha()):
+        if not (char.isascii() and ("a" <= char <= "z")):
             return False
     return True
 
@@ -48,7 +55,7 @@ def fqdn_check(value: Any) -> bool:
         if label[0] == "-" or label[-1] == "-":
             return False
 
-        if not _is_ascii_alnum_or_hyphen(label):
+        if not _is_lower_ascii_alnum_or_hyphen(label):
             return False
 
     tld = labels[-1]
@@ -56,7 +63,7 @@ def fqdn_check(value: Any) -> bool:
     if len(tld) < 2:
         return False
 
-    if not _is_ascii_alpha(tld):
+    if not _is_lower_ascii_alpha(tld):
         return False
 
     return True
